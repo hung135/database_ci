@@ -5,10 +5,8 @@ FROM ubuntu
 MAINTAINER HUNG NGUYEN <hung135@hotmail.com>
 
 # Update application repository list and install the Redis server.
-RUN apt-get update && apt-get install -y sqitch vim
+RUN apt-get update && apt-get install -y sqitch vim git make
 
-
-RUN apt-get update && apt-get install -y fish make
 RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 
 # Add PostgreSQL's repository. It contains the most recent stable release
@@ -51,8 +49,9 @@ VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 CMD ["/usr/lib/postgresql/9.6/bin/postgres", "-D", "/var/lib/postgresql/9.6/main", "-c", "config_file=/etc/postgresql/9.6/main/postgresql.conf"]
 # Expose default port
 #/usr/lib/postgresql/9.6/bin/postgres -D /var/lib/postgresql/9.6/main -c config_file=/etc/postgresql/9.6/main/postgresql.conf
-EXPOSE 22
+#EXPOSE 22
 
 # Set the default command
 #ENTRYPOINT ["/usr/bin/redis-server"]
-ENTRYPOINT ["/bin/bash"]
+
+#ENTRYPOINT ["/bin/bash"]
