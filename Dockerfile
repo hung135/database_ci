@@ -5,13 +5,40 @@ FROM ubuntu
 MAINTAINER HUNG NGUYEN <hung135@hotmail.com>
 
 # Update application repository list and install the Redis server.
-RUN apt-get update && apt-get install -y sqitch vim git make
+RUN apt-get update && apt-get install -y sqitch vim git make curl wget
 
 RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 
 # Add PostgreSQL's repository. It contains the most recent stable release
 #     of PostgreSQL, ``9.6``.
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+#RUN echo "deb https://download.gocd.org /" | tee /etc/apt/sources.list.d/gocd.list
+#RUN curl https://download.gocd.org/GOCD-GPG-KEY.asc | apt-key add -
+#RUN apt-get update
+
+#RUN echo "deb https://download.gocd.org /" | tee /etc/apt/sources.list.d/gocd.list
+#curl https://download.gocd.org/GOCD-GPG-KEY.asc | sudo apt-key add -
+#sudo apt-get update
+#RUN add-apt-repository ppa:openjdk-r/ppa
+RUN apt-get update
+RUN apt-get install -y openjdk-8-jre apache2-utils
+
+RUN wget https://download.gocd.org/binaries/18.1.0-5937/deb/go-server_18.1.0-5937_all.deb
+RUN wget https://download.gocd.org/binaries/18.1.0-5937/deb/go-agent_18.1.0-5937_all.deb
+RUN cat /etc/apt/sources.list.d/pgdg.list
+#RUN cat /etc/apt/sources.list.d/gocd.list
+RUN curl https://download.gocd.org/GOCD-GPG-KEY.asc | apt-key add -
+RUN echo "deb https://download.gocd.org /" > /etc/apt/sources.list.d/gocd.list
+
+#RUN apt-key list
+#RUN apt-get update && apt-get install -y sqitch vim git make curl wget
+#RUN dpkg -i go-server_18.1.0-5937_all.deb
+RUN apt-get update
+RUN apt-get install default-jre go-server go-agent apache2-utils
+RUN chown -R go:go /mnt/artifact-storage
+RUN htpasswd -B -c /etc/go/authentication sammy
+RUN htpasswd -B /etc/go/authentication admin
+RUN systemctl start go-server go-agent
 
 # Install ``python-software-properties``, ``software-properties-common`` and PostgreSQL 9.6
 #  There are some warnings (in red) that show up during the build. You can hide
@@ -44,6 +71,13 @@ EXPOSE 5432
 
 # Add VOLUMEs to allow backup of config, logs and databases
 VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
+
+
+
+
+
+
+
 
 # Set the default command to run when starting the container
 CMD ["/usr/lib/postgresql/9.6/bin/postgres", "-D", "/var/lib/postgresql/9.6/main", "-c", "config_file=/etc/postgresql/9.6/main/postgresql.conf"]
