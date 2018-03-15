@@ -5,7 +5,7 @@ FROM ubuntu
 MAINTAINER HUNG NGUYEN <hung135@hotmail.com>
 
 # Update application repository list and install the Redis server.
-RUN apt-get update && apt-get install -y sqitch vim git make
+RUN apt-get update && apt-get install -y sqitch vim git make virtualenv
 
 RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
 
